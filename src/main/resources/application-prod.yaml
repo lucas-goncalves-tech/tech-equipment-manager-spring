@@ -1,0 +1,11 @@
+management:
+    endpoints:
+        web:
+            exposure:
+                include: ${ACTUATOR_EXPOSURE:health,info}
+    endpoint:
+        health:
+            show-details: ${ACTUATOR_HEALTH_SHOW_DETAILS:when_authorized}
+    metrics:
+        tags:
+            application: tech-equipment-manager
