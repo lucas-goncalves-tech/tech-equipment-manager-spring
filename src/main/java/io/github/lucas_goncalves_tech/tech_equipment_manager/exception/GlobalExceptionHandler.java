@@ -28,6 +28,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, problem, headers, statusCode, request);
     }
 
+    @ExceptionHandler(DomainInvalidException.class)
+    public ProblemDetail handleDomainInvalid(DomainInvalidException exception) {
+        return buildProblem("Dominio inválido", "urn:error:badRequest", exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ProblemDetail handleAuthentication(AuthenticationException exception) {
         return buildProblem("Acesso não autorizado", "urn:error:unauthorized", exception.getMessage(), HttpStatus.UNAUTHORIZED);
