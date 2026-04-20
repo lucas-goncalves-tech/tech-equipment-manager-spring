@@ -1,0 +1,64 @@
+package io.github.lucas_goncalves_tech.tech_equipment_manager.exception;
+
+import org.springframework.http.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.naming.AuthenticationException;
+import java.net.URI;
+import java.nio.file.AccessDeniedException;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    protected ResponseEntity<Object> handleMethodArgumentInvalid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+        ProblemDetail problem = buildProblem("Argumento inválidos", "urn:error:badRequest", "Erro nos parâmetros enviados", statusCode);
+        List<Map<String, String>> invalidParams = exception
+                .getBindingResult()
+                .getFieldErrors().stream()
+                .map((error) -> Map.of("field", error.getField(), "reason", (error.getDefaultMessage() != null) ? error.getDefaultMessage() : "")).toList();
+        problem.setProperty("invalid_params", invalidParams);
+
+        return handleExceptionInternal(exception, problem, headers, statusCode, request);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ProblemDetail handleAuthentication(AuthenticationException exception) {
+        return buildProblem("Acesso não autorizado", "urn:error:unauthorized", exception.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ProblemDetail handleAccessDenied(AccessDeniedException exception) {
+        return buildProblem("Acesso negado", "urn:error:forbidden", exception.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleResourceNotFound(ResourceNotFoundException exception) {
+        return buildProblem("Recurso não encontrado", "urn:error:notFound", exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BusinessConflictException.class)
+    public ProblemDetail handleBusinessConflict(BusinessConflictException exception) {
+        return buildProblem("Conflito de estado", "urn:error:conflict", exception.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ProblemDetail handleInternal(RuntimeException exception) {
+        return buildProblem("Error interno no servidor", "urn:error:internalError", "Ocorreu um erro interno!", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ProblemDetail buildProblem(String title, String type, String detail, HttpStatusCode statusCode) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(statusCode, detail);
+        problem.setTitle(title);
+        problem.setType(URI.create(type));
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
+    }
+
+}
