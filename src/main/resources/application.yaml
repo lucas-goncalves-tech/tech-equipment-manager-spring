@@ -1,6 +1,9 @@
 spring:
   application:
     name: tech-equipment-manager
+  mvc:
+    problem details:
+      enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/${DB_NAME}
     username: ${DB_USER}
