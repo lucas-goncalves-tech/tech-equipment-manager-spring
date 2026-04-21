@@ -1,6 +1,7 @@
 package io.github.lucas_goncalves_tech.tech_equipment_manager.exception;
 
 import org.springframework.http.*;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -37,6 +38,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ProblemDetail handleAuthentication(AuthenticationException exception) {
         return buildProblem("Acesso não autorizado", "urn:error:unauthorized", exception.getMessage(), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentials(BadCredentialsException exception, WebRequest request) {
+        ProblemDetail problem = buildProblem(
+                "Credenciais Inválidas.",
+                "urn:error:unauthorized",
+                "E-mail ou senha inválidos.",
+                HttpStatus.UNAUTHORIZED
+        );
+
+        return handleExceptionInternal(exception, problem, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+    }
+
 
     @ExceptionHandler(AccessDeniedException.class)
     public ProblemDetail handleAccessDenied(AccessDeniedException exception) {
