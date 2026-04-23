@@ -42,6 +42,10 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 50)
     private UserRole role = UserRole.USER;
 
+    @Setter
+    @Column(nullable = false)
+    private int tokenVersion = 0;
+
     @Column(nullable = false)
     private Boolean isActive = true;
 
@@ -56,23 +60,23 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
 
     @Builder
-    public User(Email email, String passwordHash, String displayName, UserRole role){
+    public User(Email email, String passwordHash, String displayName, UserRole role) {
         this.email = email;
         this.passwordHash = passwordHash;
         this.displayName = displayName;
         this.role = (role != null) ? role : UserRole.USER;
     }
 
-    public String getEmailRaw(){
+    public String getEmailRaw() {
         return email.getEmail();
     }
 
-    public void deactivate(String reason){
+    public void deactivate(String reason) {
         this.isActive = false;
         this.deactivatedReason = reason;
     }
 
-    public void activate(){
+    public void activate() {
         this.isActive = true;
         this.deactivatedReason = null;
     }
