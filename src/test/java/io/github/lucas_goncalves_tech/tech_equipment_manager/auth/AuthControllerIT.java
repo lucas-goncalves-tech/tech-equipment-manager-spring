@@ -68,10 +68,26 @@ public class AuthControllerIT extends BaseIT {
                     .andExpect(jsonPath("$.timestamp").exists())
                     .andExpect(jsonPath("$.type").value("urn:error:badRequest"))
                     .andExpect(jsonPath("$.invalid_params").isArray())
-                    .andExpect(jsonPath("$.invalid_params[0].field").exists())
-                    .andExpect(jsonPath("$.invalid_params[0].reason").exists())
                     .andExpect(jsonPath("$.invalid_params[?(@.field == 'email')]").exists())
-                    .andExpect(jsonPath("$.invalid_params[?(@.field == 'password')]").exists());
+                    .andExpect(jsonPath("$.invalid_params[?(@.field == 'password')]").exists())
+                    .andExpect(jsonPath("$.invalid_params[0].reason").exists());
+        }
+
+        @Test
+        @DisplayName("Should return 401 when credentials are invalid")
+        public void shouldReturn401_WhenCredentialsAreInvalid() throws Exception {
+            LoginRequest request = new LoginRequest("non-exist@email.com", "123123123");
+            String json = objectMapper.writeValueAsString(request);
+
+            mockMvc.perform(post(loginUrl)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(jsonPath("$.status").value(401))
+                    .andExpect(jsonPath("$.title").exists())
+                    .andExpect(jsonPath("$.detail").exists())
+                    .andExpect(jsonPath("$.timestamp").exists())
+                    .andExpect(jsonPath("$.type").value("urn:error:unauthorized"));
         }
     }
 }
