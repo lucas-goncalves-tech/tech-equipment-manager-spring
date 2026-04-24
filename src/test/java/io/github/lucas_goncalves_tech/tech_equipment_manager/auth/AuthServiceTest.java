@@ -14,11 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @Tag("unit")
@@ -58,6 +61,18 @@ public class AuthServiceTest {
             assertThat(response.accessToken()).isEqualTo(accessToken);
             assertThat(response.refreshToken()).isEqualTo(refreshToken);
         }
-    }
 
+        @Test
+        @DisplayName("Should throw BadCredentials Exception when credentials are invalid")
+        public void shouldThrowBadCredentialsException_WhenCredentialsAreInvalid() {
+            final LoginRequest request = new LoginRequest("email@example.com", "raw-password");
+
+            when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("invalid credentials"));
+
+            assertThatThrownBy(() -> authService.login(request))
+                    .isInstanceOf(BadCredentialsException.class);
+
+            verifyNoInteractions(jwtService);
+        }
+    }
 }
