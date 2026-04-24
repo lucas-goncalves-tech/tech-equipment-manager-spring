@@ -89,5 +89,23 @@ public class AuthControllerIT extends BaseIT {
                     .andExpect(jsonPath("$.timestamp").exists())
                     .andExpect(jsonPath("$.type").value("urn:error:unauthorized"));
         }
+
+        @Test
+        @DisplayName("Should return 403 when credentials are valid but banned")
+        public void shouldReturn403_WhenCredentialsAreValidButBanned() throws Exception {
+            User user = userFactory.setEmail("banned@email.com").create(u -> u.deactivate("banned"));
+            LoginRequest request = new LoginRequest(user.getEmailRaw(), "123123123");
+            String json = objectMapper.writeValueAsString(request);
+
+            mockMvc.perform(post(loginUrl)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.status").value(403))
+                    .andExpect(jsonPath("$.title").exists())
+                    .andExpect(jsonPath("$.detail").exists())
+                    .andExpect(jsonPath("$.timestamp").exists())
+                    .andExpect(jsonPath("$.type").value("urn:error:forbidden"));
+        }
     }
 }

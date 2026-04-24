@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
@@ -71,6 +72,19 @@ public class AuthServiceTest {
 
             assertThatThrownBy(() -> authService.login(request))
                     .isInstanceOf(BadCredentialsException.class);
+
+            verifyNoInteractions(jwtService);
+        }
+
+        @Test
+        @DisplayName("Should throw Disabled Exception when credentials are valid but is_active is false")
+        public void shouldThrowDisabledException_WhenCredentialsAreValidButIsValidIsFalse() {
+            final LoginRequest request = new LoginRequest("email@example.com", "raw-password");
+
+            when(authenticationManager.authenticate(any())).thenThrow(new DisabledException("disabled account"));
+
+            assertThatThrownBy(() -> authService.login(request))
+                    .isInstanceOf(DisabledException.class);
 
             verifyNoInteractions(jwtService);
         }
