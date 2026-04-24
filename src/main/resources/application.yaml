@@ -1,9 +1,6 @@
 spring:
   application:
     name: tech-equipment-manager
-  mvc:
-    problem details:
-      enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/${DB_NAME}
     username: ${DB_USER}
@@ -20,3 +17,14 @@ spring:
     baseline-on-migrate: true
   profiles:
     active: ${PROFILE:dev}
+  mvc:
+    problemdetails:
+      enabled: true
+server:
+  servlet:
+    context-path: /api
+jwt:
+  secret: ${JWT_SECRET}
+  access-expires-in-minutes: ${JWT_ACCESS_EXPIRES_IN_MINUTES:10}
+  refresh-expires-in-days: ${JWT_REFRESH_EXPIRES_IN_DAYS:7}
+

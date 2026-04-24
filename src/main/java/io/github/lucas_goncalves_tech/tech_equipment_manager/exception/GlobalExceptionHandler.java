@@ -1,16 +1,19 @@
 package io.github.lucas_goncalves_tech.tech_equipment_manager.exception;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.*;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.naming.AuthenticationException;
 import java.net.URI;
-import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +21,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    protected ResponseEntity<Object> handleMethodArgumentInvalid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, @NonNull HttpHeaders headers, @NonNull HttpStatusCode statusCode, @NonNull WebRequest request) {
         ProblemDetail problem = buildProblem("Argumento inválidos", "urn:error:badRequest", "Erro nos parâmetros enviados", statusCode);
         List<Map<String, String>> invalidParams = exception
                 .getBindingResult()
@@ -51,6 +55,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, problem, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
     }
 
+    @ExceptionHandler(DisabledException.class)
+    public ProblemDetail handleDisabled(DisabledException exception) {
+        return buildProblem(
+                "Conta Desativada",
+                "urn:error:forbidden",
+                "Sua conta está inativa no sistema.",
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(LockedException.class)
+    public ProblemDetail handleLocked(LockedException exception) {
+        return buildProblem(
+                "Conta Bloqueada",
+                "urn:error:forbidden",
+                "Sua conta foi bloqueada por segurança.",
+                HttpStatus.FORBIDDEN
+        );
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ProblemDetail handleAccessDenied(AccessDeniedException exception) {

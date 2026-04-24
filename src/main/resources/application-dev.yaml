@@ -8,6 +8,9 @@ management:
       show-details: ${ACTUATOR_HEALTH_SHOW_DETAILS:always}
   metrics:
     enable:
-        all: true
+      all: true
     tags:
-        application: tech-equipment-manager
+      application: tech-equipment-manager
+logging:
+  level:
+    org.springframework.security: DEBUG
