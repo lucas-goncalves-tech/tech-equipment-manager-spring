@@ -4,6 +4,8 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +55,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, problem, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
     }
 
+    @ExceptionHandler(DisabledException.class)
+    public ProblemDetail handleDisabled(DisabledException exception) {
+        return buildProblem(
+                "Conta Desativada",
+                "urn:error:forbidden",
+                "Sua conta está inativa no sistema.",
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(LockedException.class)
+    public ProblemDetail handleLocked(LockedException exception) {
+        return buildProblem(
+                "Conta Bloqueada",
+                "urn:error:forbidden",
+                "Sua conta foi bloqueada por segurança.",
+                HttpStatus.FORBIDDEN
+        );
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ProblemDetail handleAccessDenied(AccessDeniedException exception) {
