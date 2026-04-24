@@ -1,5 +1,6 @@
 package io.github.lucas_goncalves_tech.tech_equipment_manager.exception;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,7 +19,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    protected ResponseEntity<Object> handleMethodArgumentInvalid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, @NonNull HttpHeaders headers, @NonNull HttpStatusCode statusCode, @NonNull WebRequest request) {
         ProblemDetail problem = buildProblem("Argumento inválidos", "urn:error:badRequest", "Erro nos parâmetros enviados", statusCode);
         List<Map<String, String>> invalidParams = exception
                 .getBindingResult()

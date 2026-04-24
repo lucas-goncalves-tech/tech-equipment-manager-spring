@@ -50,7 +50,28 @@ public class AuthControllerIT extends BaseIT {
                     .andExpect(cookie().httpOnly("refreshToken", true))
                     .andExpect(jsonPath("$.token").isNotEmpty())
                     .andExpect(jsonPath("$.message").isNotEmpty());
+        }
 
+        @Test
+        @DisplayName("Should return 400 when credentials are invalid")
+        public void shouldReturn400_WhenCredentialsAreInvalid() throws Exception {
+            LoginRequest request = new LoginRequest("non-valid", "");
+            String json = objectMapper.writeValueAsString(request);
+
+            mockMvc.perform(post(loginUrl)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400))
+                    .andExpect(jsonPath("$.title").exists())
+                    .andExpect(jsonPath("$.detail").exists())
+                    .andExpect(jsonPath("$.timestamp").exists())
+                    .andExpect(jsonPath("$.type").value("urn:error:badRequest"))
+                    .andExpect(jsonPath("$.invalid_params").isArray())
+                    .andExpect(jsonPath("$.invalid_params[0].field").exists())
+                    .andExpect(jsonPath("$.invalid_params[0].reason").exists())
+                    .andExpect(jsonPath("$.invalid_params[?(@.field == 'email')]").exists())
+                    .andExpect(jsonPath("$.invalid_params[?(@.field == 'password')]").exists());
         }
     }
 }
