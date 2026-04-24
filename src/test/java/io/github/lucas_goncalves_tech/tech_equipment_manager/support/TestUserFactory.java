@@ -30,7 +30,7 @@ public class TestUserFactory {
     }
 
     public User create(Consumer<User> consumer) {
-        User user = User.builder().email(new Email(email)).displayName("username").passwordHash(passwordEncoder.encode("123123")).role(role).build();
+        User user = User.builder().email(new Email(email)).displayName("username").passwordHash(passwordEncoder.encode("123123123")).role(role).build();
         System.out.println(role);
         consumer.accept(user);
         return userRepository.save(user);

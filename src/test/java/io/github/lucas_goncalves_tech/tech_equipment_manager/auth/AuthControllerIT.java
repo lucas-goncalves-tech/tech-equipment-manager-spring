@@ -38,7 +38,7 @@ public class AuthControllerIT extends BaseIT {
         @DisplayName("Should return 200 with access on body and refresh on cookie when credentials are valid")
         public void shouldReturn200WithAccessOnBodyAndRefreshOnCookie_WhenCredentialsAreValid() throws Exception {
             User user = userFactory.create();
-            LoginRequest request = new LoginRequest(user.getEmailRaw(), "123123");
+            LoginRequest request = new LoginRequest(user.getEmailRaw(), "123123123");
             String json = objectMapper.writeValueAsString(request);
 
             mockMvc.perform(post(loginUrl)
