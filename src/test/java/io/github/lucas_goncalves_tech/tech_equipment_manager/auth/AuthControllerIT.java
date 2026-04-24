@@ -53,8 +53,8 @@ public class AuthControllerIT extends BaseIT {
         }
 
         @Test
-        @DisplayName("Should return 400 when credentials are invalid")
-        public void shouldReturn400_WhenCredentialsAreInvalid() throws Exception {
+        @DisplayName("Should return 400 with invalid_params when fields are invalid")
+        public void shouldReturn400WithInvalidParams_WhenFieldsAreInvalid() throws Exception {
             LoginRequest request = new LoginRequest("non-valid", "");
             String json = objectMapper.writeValueAsString(request);
 
