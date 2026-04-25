@@ -14,17 +14,24 @@ public class JwtService {
 
     private final String issuer = "tech-manager";
 
-    @Value("${jwt.secret}")
-    private String secret;
+    @Value("${jwt.access.secret}")
+    private String accessSecret;
 
-    @Value("${jwt.access-expires-in-minutes}")
-    private int EXPIRES_ACCESS_IN_MINUTES;
-    
-    @Value("${jwt.refresh-expires-in-days}")
-    private int EXPIRES_REFRESH_IN_DAYS;
+    @Value("${jwt.refresh.secret}")
+    private String refreshSecret;
 
-    private Algorithm getAlgorithm() {
-        return Algorithm.HMAC256(secret);
+    @Value("${jwt.access.expires-in-minutes}")
+    private int ACCESS_EXPIRES_IN_MINUTES;
+
+    @Value("${jwt.refresh.expires-in-days}")
+    private int REFRESH_EXPIRES_IN_DAYS;
+
+    private Algorithm getAccessAlgorithm() {
+        return Algorithm.HMAC256(accessSecret);
+    }
+
+    private Algorithm getRefreshAlgorithm() {
+        return Algorithm.HMAC256(refreshSecret);
     }
 
     public String generateAccessToken(User user) {
@@ -33,10 +40,10 @@ public class JwtService {
                 .withSubject(user.getId().toString())
                 .withIssuer(issuer)
                 .withClaim("type", TokenType.ACCESS.name())
-                .withClaim("role", user.getRole().name())
+                .withClaim("role", user.getAuthorities().toString())
                 .withIssuedAt(now)
-                .withExpiresAt(now.plus(EXPIRES_ACCESS_IN_MINUTES, ChronoUnit.MINUTES))
-                .sign(getAlgorithm());
+                .withExpiresAt(now.plus(ACCESS_EXPIRES_IN_MINUTES, ChronoUnit.MINUTES))
+                .sign(getAccessAlgorithm());
     }
 
     public String generateRefreshToken(User user) {
@@ -47,7 +54,7 @@ public class JwtService {
                 .withClaim("type", TokenType.REFRESH.name())
                 .withClaim("tokenVersion", user.getTokenVersion())
                 .withIssuedAt(now)
-                .withExpiresAt(now.plus(EXPIRES_REFRESH_IN_DAYS, ChronoUnit.DAYS))
-                .sign(getAlgorithm());
+                .withExpiresAt(now.plus(REFRESH_EXPIRES_IN_DAYS, ChronoUnit.DAYS))
+                .sign(getRefreshAlgorithm());
     }
 }
