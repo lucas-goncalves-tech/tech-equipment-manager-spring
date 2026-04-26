@@ -1,7 +1,7 @@
-package io.github.lucas_goncalves_tech.tech_equipment_manager.auth;
+package io.github.lucas_goncalves_tech.tech_equipment_manager.auth.api;
 
 import io.github.lucas_goncalves_tech.tech_equipment_manager.BaseIT;
-import io.github.lucas_goncalves_tech.tech_equipment_manager.auth.dto.LoginRequest;
+import io.github.lucas_goncalves_tech.tech_equipment_manager.auth.api.dto.LoginRequest;
 import io.github.lucas_goncalves_tech.tech_equipment_manager.support.TestUserFactory;
 import io.github.lucas_goncalves_tech.tech_equipment_manager.user.domain.User;
 import io.github.lucas_goncalves_tech.tech_equipment_manager.user.repository.UserRepository;

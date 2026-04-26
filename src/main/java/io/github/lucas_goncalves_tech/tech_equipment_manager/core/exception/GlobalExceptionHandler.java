@@ -1,4 +1,4 @@
-package io.github.lucas_goncalves_tech.tech_equipment_manager.exception;
+package io.github.lucas_goncalves_tech.tech_equipment_manager.core.exception;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;

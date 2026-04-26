@@ -1,6 +1,6 @@
-package io.github.lucas_goncalves_tech.tech_equipment_manager.auth;
+package io.github.lucas_goncalves_tech.tech_equipment_manager.auth.service;
 
-import io.github.lucas_goncalves_tech.tech_equipment_manager.auth.dto.LoginRequest;
+import io.github.lucas_goncalves_tech.tech_equipment_manager.auth.api.dto.LoginRequest;
 import io.github.lucas_goncalves_tech.tech_equipment_manager.core.security.JwtService;
 import io.github.lucas_goncalves_tech.tech_equipment_manager.user.domain.User;
 import lombok.RequiredArgsConstructor;

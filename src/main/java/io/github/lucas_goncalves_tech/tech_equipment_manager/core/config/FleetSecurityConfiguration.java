@@ -1,4 +1,4 @@
-package io.github.lucas_goncalves_tech.tech_equipment_manager.config;
+package io.github.lucas_goncalves_tech.tech_equipment_manager.core.config;
 
 import io.github.lucas_goncalves_tech.tech_equipment_manager.core.security.JwtAutheticationFilter;
 import lombok.RequiredArgsConstructor;
