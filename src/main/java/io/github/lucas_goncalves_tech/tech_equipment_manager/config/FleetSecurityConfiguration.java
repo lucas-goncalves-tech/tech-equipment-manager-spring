@@ -1,5 +1,7 @@
 package io.github.lucas_goncalves_tech.tech_equipment_manager.config;
 
+import io.github.lucas_goncalves_tech.tech_equipment_manager.core.security.JwtAutheticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,10 +14,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class FleetSecurityConfiguration {
+
+    private final JwtAutheticationFilter jwtAutheticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -26,6 +32,7 @@ public class FleetSecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/error").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/auth/login").permitAll()
                         .anyRequest().authenticated())
+                .addFilterBefore(jwtAutheticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
