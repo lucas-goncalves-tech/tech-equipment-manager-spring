@@ -1,5 +1,8 @@
 package io.github.lucas_goncalves_tech.tech_equipment_manager.exception;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
@@ -53,6 +56,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return handleExceptionInternal(exception, problem, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ProblemDetail handleTokenExpired(TokenExpiredException exception) {
+        return buildProblem(
+                "Token Expirado",
+                "urn:error:unauthorized",
+                "O token fornecido expirou. Por favor, realize a autenticação novamente.",
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    @ExceptionHandler(SignatureVerificationException.class)
+    public ProblemDetail handleSignatureVerification(SignatureVerificationException exception) {
+        return buildProblem(
+                "Assinatura Inválida",
+                "urn:error:unauthorized",
+                "A assinatura do token não é válida.",
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    @ExceptionHandler(JWTVerificationException.class)
+    public ProblemDetail handleGenericJwtVerification(JWTVerificationException exception) {
+        return buildProblem(
+                "Token Inválido",
+                "urn:error:unauthorized",
+                "O token fornecido é inválido ou malformado.",
+                HttpStatus.UNAUTHORIZED
+        );
     }
 
     @ExceptionHandler(DisabledException.class)
