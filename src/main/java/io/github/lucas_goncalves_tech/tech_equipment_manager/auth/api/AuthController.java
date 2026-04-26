@@ -1,7 +1,8 @@
-package io.github.lucas_goncalves_tech.tech_equipment_manager.auth;
+package io.github.lucas_goncalves_tech.tech_equipment_manager.auth.api;
 
-import io.github.lucas_goncalves_tech.tech_equipment_manager.auth.dto.LoginRequest;
-import io.github.lucas_goncalves_tech.tech_equipment_manager.auth.dto.LoginResponse;
+import io.github.lucas_goncalves_tech.tech_equipment_manager.auth.api.dto.LoginRequest;
+import io.github.lucas_goncalves_tech.tech_equipment_manager.auth.api.dto.LoginResponse;
+import io.github.lucas_goncalves_tech.tech_equipment_manager.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package io.github.lucas_goncalves_tech.tech_equipment_manager.auth.dto;
+package io.github.lucas_goncalves_tech.tech_equipment_manager.auth.api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

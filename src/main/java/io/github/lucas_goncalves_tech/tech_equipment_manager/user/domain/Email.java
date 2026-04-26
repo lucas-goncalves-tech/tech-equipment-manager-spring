@@ -1,6 +1,6 @@
 package io.github.lucas_goncalves_tech.tech_equipment_manager.user.domain;
 
-import io.github.lucas_goncalves_tech.tech_equipment_manager.exception.DomainInvalidException;
+import io.github.lucas_goncalves_tech.tech_equipment_manager.core.exception.DomainInvalidException;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
